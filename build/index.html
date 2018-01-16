@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <title>You Can't Tap</title>
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  <link rel="stylesheet" href="css/style.css"> 
+</head>
+
+<body>
+  <div class="viewport__wrapper">
+    <div class="points-count" js-points-counter>0</div>
+    <div class="viewport__inner">
+      <div class="viewport__moving" js-viewport-moving>
+        <div class="background-layer">
+          <div class="background__ring is-0"></div>
+          <div class="background__ring is-1"></div>
+          <div class="background__ring is-2"></div>
+          <div class="background__ring is-3"></div>
+          <div class="background__ring is-4"></div>
+          <div class="background__ring is-5"></div>
+          <div class="background__ring is-6"></div>
+          <div class="background__ring is-7"></div>
+          <div class="background__ring is-8"></div>
+          <div class="background__ring is-9"></div>
+          <div class="background__ring is-10"></div>
+          <div class="background__ring is-11"></div>
+          <div class="background__ring is-12"></div>
+        </div>
+        <div class="game-layer" js-game-layer>
+          <div class="circle-wrapper" style="top: 0px; left: 0px;">
+            <div class="circle is-initial-circle" js-initial-clickable-circle></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js'></script>
+<script src="js/index.js"></script>
+
+</html>
