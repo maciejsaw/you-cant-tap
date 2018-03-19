@@ -1,7 +1,3 @@
-/* Game parameters */
-var endgameNumberOfCircles = 20;
-/* ------------------------------------------- */
-
 /* Global trackers */
 var currentSpeedLevel = 1;
 var currentNumberOfCircles = 0;
@@ -12,81 +8,8 @@ var speedTimer__4;
 var speedTimer__5;
 var upbeatAnimationTimer;
 var upbeatAnimationTimer2;
-/* ------------------------------------------- */
-
-function moveVieportToClickedCircle(circleElement) {
-  var clickedCircleCoordinateX = $(circleElement).closest('[js-circle-wrapper]').css('left').split('px')[0];
-  var clickedCircleCoordinateY = $(circleElement).closest('[js-circle-wrapper]').css('top').split('px')[0];
-  
-  var negativeX = -clickedCircleCoordinateX+'px';
-  var negativeY = -clickedCircleCoordinateY+'px';
-
-  var translate3dCssString = 'translate3d('+negativeX+','+negativeY+',0)';
-  $('[js-viewport-moving]').css('transform', translate3dCssString);
-}
-
-function getRandomNumber(min, max) {
-  return Math.random() * (max - min) + min;
-}
-
-function generateOneRandomCircle() {
-  var circleHtml = '<div class="circle-wrapper" js-circle-wrapper><div class="circle" js-clickable-circle></div></div>';
-  var randomCoordinateX = getRandomNumber(-200, 200);
-  var randomCoordinateY = getRandomNumber(-200, 200);
-  var $circleToAppend = $(circleHtml);
-  $circleToAppend.css({
-    top: randomCoordinateX+"px",
-    left: randomCoordinateY+"px",
-  });
-  $circleToAppend.appendTo('[js-game-layer]');
-  currentNumberOfCircles = currentNumberOfCircles + 1;
-  console.log(currentNumberOfCircles);
-}
-
-function destroyCircle(circleElement) {
-  $(circleElement).addClass('is-destroyed');
-  $(circleElement).closest('[js-circle-wrapper]').addClass('is-destroyed');
-  currentNumberOfCircles = currentNumberOfCircles - 1;
-  setTimeout(function() {
-    $(circleElement).closest('[js-circle-wrapper]').remove();
-  }, 1000);
-}
-
-function updatePoints() {
-  currentPoints = currentPoints + 100*currentSpeedLevel*currentSpeedLevel;
-  $('[js-points-counter]').text(currentPoints);
-}
-
-function resetPoints() {
-  currentPoints = 0;
-  $('[js-points-counter]').text(currentPoints);
-}
-
-$(document).on('mousedown touchstart', '[js-clickable-circle]', function(event) {
-  //moveVieportToClickedCircle(this);
-  destroyCircle(this);
-  generateOneRandomCircle();
-  updatePoints();
-});
-
-var generator;
-function generateCircles() {
-  var speedMap = {
-    1: 4000,
-    2: 2000,
-    3: 1000,
-    4: 500,
-    5: 250
-  };
-  
-  clearInterval(generator);
-  generateOneRandomCircle();
-  generator = setInterval(function() {
-    generateOneRandomCircle();
-    checkForEndGameNumberOfCircles();
-  }, speedMap[currentSpeedLevel]);
-}
-
+var endgameNumberOfCircles = 20;
+/* -------------------------------------------- */
 function checkForEndGameNumberOfCircles() {
   if (currentNumberOfCircles >= endgameNumberOfCircles) {
     window.alert('Game over! Your score is '+ currentPoints);
@@ -110,21 +33,16 @@ function prepareNewGame() {
   $('[js-viewport-moving]').css('transform', 'translate3d(0px, 0px, 0)');
 }
 
-function startSpeedIncreaseTimers() {
-  var speedTimer__2 = setTimeout(function() {
-    currentSpeedLevel = 2;
-  }, 16000);
-  var speedTimer__3 = setTimeout(function() {
-    currentSpeedLevel = 3;
-  }, 32000);
-  var speedTimer__4 = setTimeout(function() {
-    currentSpeedLevel = 4;
-  }, 64000);
-  var speedTimer__5 = setTimeout(function() {
-    currentSpeedLevel = 5;
-  }, 128000);
+function startNewGame() {
+  generateCircles();
+  startSpeedIncreaseTimers();
+  //startRingsUpbeatAnimations();
 }
 
+$(document).on('click touchstart', '[js-initial-clickable-circle]', function(event) {
+  $('[js-initial-clickable-circle]').addClass('is-collapsed');
+  startNewGame();
+});
 function startInitialCircleUpbeatAnimations() {
   clearInterval(upbeatAnimationTimer);
   upbeatAnimationTimer = setInterval(function() {
@@ -155,17 +73,94 @@ function startRingsUpbeatAnimations() {
 function stopRingsUpbeatAnimations() {
   clearInterval(upbeatAnimationTimer2);
 }
-
-function startNewGame() {
-  generateCircles();
-  startSpeedIncreaseTimers();
-  //startRingsUpbeatAnimations();
+function getRandomNumber(min, max) {
+  return Math.random() * (max - min) + min;
 }
 
-$(document).on('click touchstart', '[js-initial-clickable-circle]', function(event) {
-  $('[js-initial-clickable-circle]').addClass('is-collapsed');
-  startNewGame();
+function generateOneRandomCircle() {
+  var circleHtml = '<div class="circle-wrapper" js-circle-wrapper><div class="circle" js-clickable-circle></div></div>';
+  var randomCoordinateX = getRandomNumber(-200, 200);
+  var randomCoordinateY = getRandomNumber(-200, 200);
+  var $circleToAppend = $(circleHtml);
+  $circleToAppend.css({
+    top: randomCoordinateX+"px",
+    left: randomCoordinateY+"px",
+  });
+  $circleToAppend.appendTo('[js-game-layer]');
+  currentNumberOfCircles = currentNumberOfCircles + 1;
+  console.log(currentNumberOfCircles);
+}
+
+var generator;
+function generateCircles() {
+  var speedMap = {
+    1: 4000,
+    2: 2000,
+    3: 1000,
+    4: 500,
+    5: 250
+  };
+  
+  clearInterval(generator);
+  generateOneRandomCircle();
+  generator = setInterval(function() {
+    generateOneRandomCircle();
+    checkForEndGameNumberOfCircles();
+  }, speedMap[currentSpeedLevel]);
+}
+/* ------------------------------------------- */
+
+function moveVieportToClickedCircle(circleElement) {
+  var clickedCircleCoordinateX = $(circleElement).closest('[js-circle-wrapper]').css('left').split('px')[0];
+  var clickedCircleCoordinateY = $(circleElement).closest('[js-circle-wrapper]').css('top').split('px')[0];
+  
+  var negativeX = -clickedCircleCoordinateX+'px';
+  var negativeY = -clickedCircleCoordinateY+'px';
+
+  var translate3dCssString = 'translate3d('+negativeX+','+negativeY+',0)';
+  $('[js-viewport-moving]').css('transform', translate3dCssString);
+}
+
+function destroyCircle(circleElement) {
+  $(circleElement).addClass('is-destroyed');
+  $(circleElement).closest('[js-circle-wrapper]').addClass('is-destroyed');
+  currentNumberOfCircles = currentNumberOfCircles - 1;
+  setTimeout(function() {
+    $(circleElement).closest('[js-circle-wrapper]').remove();
+  }, 1000);
+}
+
+function updatePoints() {
+  currentPoints = currentPoints + 1000*currentSpeedLevel;
+  $('[js-points-counter]').text(currentPoints);
+}
+
+function resetPoints() {
+  currentPoints = 0;
+  $('[js-points-counter]').text(currentPoints);
+}
+
+$(document).on('mousedown touchstart', '[js-clickable-circle]', function(event) {
+  //moveVieportToClickedCircle(this);
+  destroyCircle(this);
+  generateOneRandomCircle();
+  updatePoints();
 });
+
+function startSpeedIncreaseTimers() {
+  var speedTimer__2 = setTimeout(function() {
+    currentSpeedLevel = 2;
+  }, 16000);
+  var speedTimer__3 = setTimeout(function() {
+    currentSpeedLevel = 3;
+  }, 32000);
+  var speedTimer__4 = setTimeout(function() {
+    currentSpeedLevel = 4;
+  }, 64000);
+  var speedTimer__5 = setTimeout(function() {
+    currentSpeedLevel = 5;
+  }, 128000);
+}
 
 /*on init*/
 prepareNewGame();
